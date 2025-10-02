@@ -11,7 +11,7 @@ const AdminSidebar = ({ name, email }) => {
       {/* Profile Section */}
       <div className="flex flex-col items-center mb-8 pt-8">
         <img
-          src="/seller.png"
+          src="https://via.placeholder.com/100"
           alt="Profile"
           className="w-28 h-28 rounded-full border-4 border-white object-cover"
         />
@@ -19,9 +19,9 @@ const AdminSidebar = ({ name, email }) => {
           className="mt-3 text-4xl"
           style={{ fontFamily: "Italianno" }}
         >
-          {name || "Keyan Fernando"}
+          {name || "Admin"}
         </h2>
-        <p className="text-sm text-gray-200">{email || "keyanfernando@gmail.com"}</p>
+        <p className="text-sm text-gray-200">{email || "admin@example.com"}</p>
       </div>
 
       {/* Sidebar Menu */}

@@ -1,20 +1,36 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react';
+import { loginDoctor } from '../../apis/doctorAPI';
+
 
 const VetDoctorSignIn = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errors] = useState({});
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    // Add your validation/login logic here
-    console.log('Vet Doctor Sign In:', formData);
+  const handleSubmit = async () => {
+    setLoading(true);
+    setErrors({});
+    try {
+      const data = await loginDoctor(formData.email, formData.password);
+      console.log("Login success:", data);
+
+      localStorage.setItem("token", data.data.token);
+
+      navigate("/vetdoctor/dashboard"); 
+    } catch (error) {
+      console.error("Login failed:", error);
+      setErrors({ form: error.message || "Login failed" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -81,12 +97,15 @@ const VetDoctorSignIn = () => {
           {errors.password && <p className="text-red-500 text-sm ml-4 mt-0">{errors.password}</p>}
         </div>
 
+        {errors.form && <p className="text-red-500 text-sm mt-2">{errors.form}</p>}
+
         <button
           onClick={handleSubmit}
-          className="w-1/3 bg-[#e91e63] text-white text-3xl py-2.5 rounded-full shadow-md hover:bg-pink-500"
+          disabled={loading}
+          className="w-1/3 bg-[#e91e63] text-white text-3xl py-2.5 rounded-full shadow-md hover:bg-pink-500 disabled:opacity-50"
           style={{ fontFamily: 'Instrument Serif, serif' }}
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </button>
 
         <p className="text-center text-sm mt-4 text-[#e91e63] cursor-pointer" onClick={() => console.log('Forgot Password')}>

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import SellerSidebar from "../../components/Seller/SellerSidebar";
+import { createPet } from "../../apis/petApi";
+import { enqueueSnackbar } from "notistack";
 
 const AddNewPet = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +20,13 @@ const AddNewPet = () => {
     contactNumber: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  const uid = sessionStorage.getItem('uid');
+  if (uid) {
+    formData.sellerId = uid;
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -27,14 +36,65 @@ const AddNewPet = () => {
     setFormData({ ...formData, images: Array.from(e.target.files) });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can send formData to backend API here
-    alert("Pet added successfully!");
+    setLoading(true);
+    try {
+      const payload = {
+        name: formData.name,
+        type: formData.type,
+        breed: formData.breed,
+        age: formData.age,
+        weight: formData.weight,
+        location: formData.location,
+        price: parseFloat(formData.price),
+        description: formData.description,
+        sellerName: formData.sellerName,
+        sellerId: formData.sellerId,
+        address: formData.address,
+        contactNumber: formData.contactNumber
+      };
+
+      const fd = new FormData();
+      fd.append("pet", new Blob([JSON.stringify(payload)], { type: "application/json" }));
+
+      formData.images.forEach(file => fd.append("images", file));
+
+      const res = await createPet(fd);
+
+      if (!res.status) throw new Error("Create failed");
+
+      // const body = await res.json();
+      enqueueSnackbar('Pet added successfully', { variant: 'success' });
+
+      setFormData({
+        name: "",
+        type: "",
+        breed: "",
+        age: "",
+        weight: "",
+        location: "",
+        price: "",
+        description: "",
+        images: [],
+        sellerName: "",
+        sellerId: uid || "",
+        address: "",
+        contactNumber: "",
+      });
+
+    } catch (err) {
+      console.error(err);
+      enqueueSnackbar('Failed to add a new pet.', { variant: 'error' });
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
+
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <SellerSidebar />
 
@@ -49,7 +109,7 @@ const AddNewPet = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-[#b6d0f8] p-6 rounded-2xl shadow-lg space-y-4"
+          className="bg-white p-6 rounded-2xl shadow-lg space-y-4"
         >
           {/* Pet Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -136,6 +196,7 @@ const AddNewPet = () => {
                 required
               />
             </div>
+             
             <div>
               <label className="block font-semibold">Price (LKR) :</label>
               <input
@@ -178,7 +239,7 @@ const AddNewPet = () => {
                 required
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block font-semibold">Seller Id :</label>
               <input
                 type="text"
@@ -189,7 +250,7 @@ const AddNewPet = () => {
                 className="w-full p-2 border rounded-lg"
                 required
               />
-            </div>
+            </div> */}
             <div>
               <label className="block font-semibold">Contact Number :</label>
               <input
@@ -253,7 +314,7 @@ const AddNewPet = () => {
               type="submit"
               className="px-4 py-2 rounded-lg bg-pink-500 text-white hover:bg-pink-600"
             >
-              Add Pet
+              {loading ? "Submitting..." : "Submit"}
             </button>
           </div>
         </form>

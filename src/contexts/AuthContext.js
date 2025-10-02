@@ -16,17 +16,22 @@ export function AuthProvider({ children }){
         }
     }, []);
 
-    const login = async (response) => {
-        sessionStorage.setItem('token', response.data.token);
+    const login = async (response, route) => {
+        sessionStorage.setItem('uid', response.id);
+        sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('fullName', response.fullName);
+        sessionStorage.setItem('email', response.email);
+        sessionStorage.setItem('role', response.role);
         setIsAuthenticated(true);
 
         setUser({
-            token: response.data.token,
-            fullName : response.data.fullName,
-            email : response.data.email,
-            role : response.data.role
+            uid : sessionStorage.getItem('uid'),
+            token: sessionStorage.getItem('token'),
+            fullName :sessionStorage.getItem('fullName'),
+            email : sessionStorage.getItem('email'),
+            role : sessionStorage.getItem('role'),
         });
-        navigate('/');
+        navigate(route);
     };
 
     const logout = () => {

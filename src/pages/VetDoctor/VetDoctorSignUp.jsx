@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Mail, User, Lock, Upload } from "lucide-react";
+import { Mail, User, Lock, Upload, Phone, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { doctorSignUp } from "../../apis/doctorAPI";
+import { CircularProgress } from "@mui/material";
 
 const VetDoctorSignUp = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const [formData, setFormData] = useState({
@@ -13,6 +16,8 @@ const VetDoctorSignUp = () => {
     password: "",
     confirmPassword: "",
     license: null,
+    contactNumber: "",
+    address: "",
     termsAccepted: false,
   });
 
@@ -27,15 +32,20 @@ const VetDoctorSignUp = () => {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const newErrors = {};
 
     if (!formData.email) newErrors.email = "Email is required";
     if (!formData.fullName) newErrors.fullName = "Full Name is required";
     if (!formData.password) newErrors.password = "Password is required";
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
+    if (formData.password !== formData.confirmPassword)
+      newErrors.confirmPassword = "Passwords do not match";
+    if (!formData.contactNumber) newErrors.contactNumber = "Contact number is required";
+    if (!formData.address) newErrors.address = "Address is required";
     if (!formData.license) newErrors.license = "License upload is required";
-    if (!formData.termsAccepted) newErrors.termsAccepted = "You must accept the terms";
+    if (!formData.termsAccepted)
+      newErrors.termsAccepted = "You must accept the terms";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -43,12 +53,22 @@ const VetDoctorSignUp = () => {
       return;
     }
 
-    setErrors({});
-    enqueueSnackbar("Vet Doctor Signup Successful!", { variant: "success" });
+    try {
+      const res = await doctorSignUp(formData);
+      if (res.status) {
+        setLoading(false);
+        enqueueSnackbar("Vet Doctor Signup Successful!", { variant: "success" });
+      }
 
-    setTimeout(() => {
-      navigate("/vetdoctor/signin");
-    }, 1500);
+      setTimeout(() => {
+        navigate("/vetdoctor/signin");
+      }, 1500);
+    } catch (err) {
+      setLoading(false);
+      enqueueSnackbar(err?.msg || "Signup failed", { variant: "error" });
+    }finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -95,6 +115,7 @@ const VetDoctorSignUp = () => {
 
         <form onSubmit={handleSubmit} className="flex flex-col justify-start items-center w-full">
           <div className="space-y-4 w-full max-w-md">
+            
             {/* Email */}
             <div className="flex items-center bg-[#9bd8ec] rounded-full px-4 py-3">
               <Mail className="text-[#0ea5b7]" />
@@ -122,6 +143,34 @@ const VetDoctorSignUp = () => {
               />
             </div>
             {errors.fullName && <p className="text-red-500 text-sm ml-4">{errors.fullName}</p>}
+
+            {/* Contact Number */}
+            <div className="flex items-center bg-[#9bd8ec] rounded-full px-4 py-3">
+              <Phone className="text-[#0ea5b7]" />
+              <input
+                type="text"
+                name="contactNumber"
+                value={formData.contactNumber}
+                onChange={handleChange}
+                placeholder="Enter Contact Number"
+                className="w-full bg-transparent focus:outline-none ml-2 placeholder-white text-gray-900"
+              />
+            </div>
+            {errors.contactNumber && <p className="text-red-500 text-sm ml-4">{errors.contactNumber}</p>}
+
+            {/* Address */}
+            <div className="flex items-center bg-[#9bd8ec] rounded-full px-4 py-3">
+              <Home className="text-[#0ea5b7]" />
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Enter Address"
+                className="w-full bg-transparent focus:outline-none ml-2 placeholder-white text-gray-900"
+              />
+            </div>
+            {errors.address && <p className="text-red-500 text-sm ml-4">{errors.address}</p>}
 
             {/* Password */}
             <div className="flex items-center bg-[#9bd8ec] rounded-full px-4 py-3">
@@ -195,7 +244,15 @@ const VetDoctorSignUp = () => {
             className="w-1/3 bg-[#e91e63] text-white text-2xl py-2.5 mt-6 rounded-full shadow-md hover:bg-pink-500"
             style={{ fontFamily: "Instrument Serif, serif" }}
           >
-            Sign Up
+            {loading ? (
+              <>
+                <CircularProgress/>
+              </>
+            ) : (
+              <>
+              Sign Up
+              </>
+            )}
           </button>
         </form>
 
@@ -209,8 +266,6 @@ const VetDoctorSignUp = () => {
             Sign In
           </span>
         </p>
-
-      
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ const allFood = [
     id: 1,
     name: "PEDIGREE DRY DOG FOOD",
     price: 1950,
-    img: "/pedigree.png", // replace with actual food image path
+    img: "/dogfood.png", // replace with actual food image path
     description:
       "This dry dog food offers balanced nutrition with high-quality chicken and vegetables, supporting strong muscles, digestion, coat health, and teeth. Rich in vitamins, minerals, and Omega 6, it's ideal for maintaining your dog's overall health and vitality. Suitable for all adult breeds.",
     nutrition: [

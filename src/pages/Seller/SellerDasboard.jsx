@@ -5,12 +5,12 @@ import SellerSidebar from "../../components/Seller/SellerSidebar";
 
 const SellerDashboard = () => {
   const [stats, setStats] = useState({
-    totalUsers: 12,
-    totalOrders: 15,
-    pendingOrders: 6,
-    completedOrders: 9,
-    productCount: 20,
-    totalRevenue: 6700,
+    totalUsers: 0,
+    totalOrders: 0,
+    pendingOrders: 0,
+    completedOrders: 0,
+    productCount: 0,
+    totalRevenue: 0,
   });
 
   // Fetch stats from backend
@@ -36,7 +36,7 @@ const SellerDashboard = () => {
       <div className="flex-1 p-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold mt-3" style={{ fontFamily: 'Irish Grover' }}>Hello Sheron ....</h1>
+          <h1 className="text-4xl font-bold mt-3" style={{ fontFamily: 'Irish Grover' }}>Hello  ....</h1>
           
         </div>
 
@@ -48,37 +48,37 @@ const SellerDashboard = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           {/* Total Users */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Total Users</p>
             <p className="text-xl font-bold text-blue-600">{stats.totalUsers}</p>
           </div>
 
           {/* Total Orders */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Total Orders</p>
             <p className="text-xl font-bold text-green-600">{stats.totalOrders}</p>
           </div>
 
           {/* Pending Orders */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Pending Orders</p>
             <p className="text-xl font-bold text-yellow-600">{stats.pendingOrders}</p>
           </div>
 
           {/* Completed Orders */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Completed Orders</p>
             <p className="text-xl font-bold text-green-500">{stats.completedOrders}</p>
           </div>
 
           {/* Product Count */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Product Count</p>
             <p className="text-xl font-bold text-blue-500">{stats.productCount}</p>
           </div>
 
           {/* Total Revenue */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Total Revenue</p>
             <p className="text-xl font-bold text-purple-600">
               ${stats.totalRevenue.toFixed(2)}

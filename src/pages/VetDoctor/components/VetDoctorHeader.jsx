@@ -47,9 +47,7 @@ const VetDoctorHeader = ({ onMenuClick, sidebarOpen }) => {
 
         {/* Right Section - User Actions */}
         <div className="flex items-center space-x-3">
-          <button 
-          className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors"
-          onClick={() => navigate("/vetdoctor/dashboard")}>
+          <button className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors">
             My Profile
           </button>
           <button

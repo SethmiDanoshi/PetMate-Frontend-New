@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import BuyerSidebar from "../../components/Buyer/BuyerSidebar";
+import axiosInstance from "../../apis/axios";
+import { enqueueSnackbar } from "notistack";
 
 const AddNewAppointment = () => {
   const [doctors, setDoctors] = useState([]);
@@ -22,8 +24,8 @@ const AddNewAppointment = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/doctors"); // Replace with your API URL
-        const data = await response.json();
+        const response = await axiosInstance.get('/admin/doctors/verified');
+        const data = await response.data.data;
         setDoctors(data);
       } catch (error) {
         console.error("Error fetching doctors:", error);
@@ -53,10 +55,50 @@ const AddNewAppointment = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Appointment Data:", formData);
-    // TODO: send POST request to backend to save appointment
+    try {
+      // build request body from your formData
+      const payload = {
+        doctorId: formData.doctorId,
+        date: formData.date,
+        time: formData.timeSlot ? `${formData.timeSlot}:00` : "",
+        symptoms: formData.symptoms,
+        appointmentType: formData.bookingType,
+        petType: formData.petType.toUpperCase(),
+        userContactNumber: formData.contactNumber,
+      };
+
+      const response = await axiosInstance.post(
+        "/appointments",
+        payload,
+        {
+          headers: {
+            "User-Id": sessionStorage.getItem('uid'),
+          },
+        }
+      );
+
+      if (response.data.status) {
+        setFormData({
+          ownerName: "",
+          address: "",
+          doctorId: "",
+          date: "",
+          timeSlot: "",
+          symptoms: "",
+          bookingType: "",
+          petType: "",
+          contactNumber: "",
+        });
+      }
+
+      console.log("Appointment created:", response.data);
+      enqueueSnackbar('Appointment booked successfully!', { variant: 'success' });
+    } catch (error) {
+      console.error("Error booking appointment:", error.response?.data || error);
+      enqueueSnackbar(error.response?.data?.message || "Something went wrong", { variant: 'error' });
+    }
   };
 
   return (
@@ -174,26 +216,25 @@ const AddNewAppointment = () => {
                 className="w-full p-3 rounded-full bg-gray-100 outline-none"
               >
                 <option value="">Select type</option>
-                <option value="In-Clinic">In-Clinic</option>
-                <option value="Online">Online</option>
-                <option value="Home Visit">Home Visit</option>
+                <option value="IN_CLINIC">In-Clinic</option>
+                <option value="ONLINE">Online</option>
+                <option value="HOME_VISIT">Home Visit</option>
               </select>
 
               <label className="block mt-6 mb-2 font-medium">
                 Available Time slots:
               </label>
               <div className="grid grid-cols-3 gap-3">
-                {["8.30", "10.30", "12.30", "2.30", "4.30", "6.30"].map(
+                {["8:30", "10:30", "12:30", "2:30", "04:30", "6:30"].map(
                   (time) => (
                     <button
                       type="button"
                       key={time}
                       onClick={() => handleTimeSlot(time)}
-                      className={`p-2 rounded-full ${
-                        formData.timeSlot === time
-                          ? "bg-pink-500 text-white"
-                          : "bg-gray-100 hover:bg-pink-200"
-                      }`}
+                      className={`p-2 rounded-full ${formData.timeSlot === time
+                        ? "bg-pink-500 text-white"
+                        : "bg-gray-100 hover:bg-pink-200"
+                        }`}
                     >
                       {time}
                     </button>

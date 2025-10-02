@@ -9,13 +9,21 @@ const MyAppointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        // TODO: replace with your logged-in user ID or token
-        const userId = "123"; 
-        const response = await fetch(`http://localhost:5000/api/appointments/user/${userId}`);
+        // Replace with actual logged-in user ID (from auth/token)
+        const userId = "688a42e52e7e3840530b61cc"; 
+        const response = await fetch(
+          `http://localhost:8080/api/appointments/user/${userId}`
+        );
         const data = await response.json();
-        setAppointments(data);
+
+        if (data.status && Array.isArray(data.data)) {
+          setAppointments(data.data);
+        } else {
+          setAppointments([]);
+        }
       } catch (error) {
         console.error("Error fetching appointments:", error);
+        setAppointments([]);
       } finally {
         setLoading(false);
       }
@@ -53,7 +61,7 @@ const MyAppointments = () => {
                   <strong>Appointment ID</strong> : {appt.id}
                 </p>
                 <p>
-                  <strong>Pet Owner Name</strong> : {appt.ownerName}
+                  <strong>Pet Owner Name</strong> : {appt.userName}
                 </p>
                 <p>
                   <strong>Type of the pet</strong> : {appt.petType}
@@ -62,16 +70,16 @@ const MyAppointments = () => {
                   <strong>Symptoms of the pet</strong> : {appt.symptoms}
                 </p>
                 <p>
-                  <strong>Contact number</strong> : {appt.contactNumber}
+                  <strong>Contact number</strong> : {appt.userContactNumber}
                 </p>
                 <p>
-                  <strong>Type of the Booking</strong> : {appt.bookingType}
+                  <strong>Type of the Booking</strong> : {appt.appointmentType}
                 </p>
                 <p>
                   <strong>Date</strong> : {appt.date}
                 </p>
                 <p>
-                  <strong>Time Slot</strong> : {appt.timeSlot}
+                  <strong>Time Slot</strong> : {appt.time}
                 </p>
                 <p>
                   <strong>Doctor</strong> : {appt.doctorName}
@@ -92,9 +100,9 @@ const MyAppointments = () => {
                   Appointment Status :{" "}
                   <span
                     className={
-                      appt.status === "Accepted"
+                      appt.status === "CONFIRMED"
                         ? "text-green-600"
-                        : appt.status === "Declined"
+                        : appt.status === "DECLINED"
                         ? "text-red-600"
                         : "text-yellow-600"
                     }
@@ -104,7 +112,7 @@ const MyAppointments = () => {
                 </p>
 
                 {/* Book Again Button for Declined */}
-                {appt.status === "Declined" && (
+                {appt.status === "DECLINED" && (
                   <button className="mt-3 bg-pink-600 text-white px-6 py-2 rounded-full hover:bg-pink-700">
                     Book Again
                   </button>

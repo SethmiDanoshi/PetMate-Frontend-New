@@ -5,13 +5,20 @@ import { useAuth } from "../contexts/AuthContext";
 import { Avatar } from "@mui/material";
 
 const Navbar = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [active, setActive] = useState("home");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-
+  const user = {
+      uid : sessionStorage.getItem('uid'),
+      token: sessionStorage.getItem('token'),
+      fullName :sessionStorage.getItem('fullName'),
+      email : sessionStorage.getItem('email'),
+      role : sessionStorage.getItem('role'),
+  }
+  const myAccountRoute = user.role === 'SELLER' ? '/seller/dashboard' : '/buyerdashboard';
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -107,7 +114,7 @@ const Navbar = () => {
                 <p className="font-medium">Hi, {user.fullName}</p>
               </div>
               <RouterLink
-                to="/profile"
+                to={myAccountRoute}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 onClick={() => setDropdownOpen(false)}
               >

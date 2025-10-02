@@ -1,15 +1,15 @@
-// src/pages/Admin/AdminDashboard.jsx
+
 import React, { useEffect, useState } from "react";
 import AdminSidebar from "../../components/Admin/AdminSidebar";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
-    totalSellers: 10,
-    totalBuyers: 14,
-    totalVetDoctors: 8,
-    totalRequests: 3,
-    sellerRequests: 4,
-    vetDoctorRequests: 6,
+    totalSellers: 0,
+    totalBuyers: 0,
+    totalVetDoctors: 0,
+    totalRequests: 0,
+    sellerRequests: 0,
+    vetDoctorRequests: 0,
   });
 
   // Fetch stats from backend
@@ -39,7 +39,7 @@ const AdminDashboard = () => {
             className="text-4xl font-bold mt-3"
             style={{ fontFamily: "Irish Grover" }}
           >
-            Hello Keyan Fernando ....
+            Hello  ....
           </h1>
         </div>
 
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           {/* Total Sellers */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Total Sellers</p>
             <p className="text-xl font-bold text-blue-600">
               {stats.totalSellers}
@@ -63,7 +63,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Total Buyers */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Total Buyers</p>
             <p className="text-xl font-bold text-cyan-600">
               {stats.totalBuyers}
@@ -71,7 +71,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Total Vet Doctors */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Total Vet Doctors</p>
             <p className="text-xl font-bold text-purple-600">
               {stats.totalVetDoctors}
@@ -79,7 +79,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Total Requests */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Total Requests</p>
             <p className="text-xl font-bold text-green-600">
               {stats.totalRequests}
@@ -87,7 +87,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Seller Requests */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Seller Requests</p>
             <p className="text-xl font-bold text-yellow-600">
               {stats.sellerRequests}
@@ -95,7 +95,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Vet Doctor Requests */}
-          <div className="bg-[#b6d0f8] shadow-md rounded-xl p-4">
+          <div className="bg-white shadow-md rounded-xl p-4">
             <p className="text-gray-600">Vet Doctor Requests</p>
             <p className="text-xl font-bold text-red-600">
               {stats.vetDoctorRequests}

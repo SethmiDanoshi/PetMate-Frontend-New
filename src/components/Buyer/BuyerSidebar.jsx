@@ -11,7 +11,7 @@ const BuyerSidebar = ({ name, email }) => {
       {/* Profile */}
       <div className="flex flex-col items-center mb-8 pt-8">
         <img
-          src="/Buyerprofile.png"
+          src="https://via.placeholder.com/100"
           alt="Profile"
           className="w-28 h-28 rounded-full border-4 border-white object-cover"
         />

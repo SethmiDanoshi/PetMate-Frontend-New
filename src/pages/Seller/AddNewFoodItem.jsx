@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SellerSidebar from "../../components/Seller/SellerSidebar";
+import { createProduct } from "../../apis/productApi";
+import { enqueueSnackbar } from "notistack";
+import { CircularProgress } from "@mui/material";
 
 const AddNewFoodItem = () => {
   const [formData, setFormData] = useState({
@@ -10,8 +13,28 @@ const AddNewFoodItem = () => {
     quantity: "",
     date: "",
     description: "",
-    images: [],
+    sellerId: "",
+    type: "foods",
   });
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+
+  useEffect(() => {
+    const user = {
+      uid: sessionStorage.getItem('uid'),
+      token: sessionStorage.getItem('token'),
+      fullName: sessionStorage.getItem('fullName'),
+      email: sessionStorage.getItem('email'),
+      role: sessionStorage.getItem('role'),
+    }
+    if (user && user.uid) {
+      setFormData((prev) => ({
+        ...prev,
+        sellerId: user.uid,
+      }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,27 +42,66 @@ const AddNewFoodItem = () => {
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, images: Array.from(e.target.files) });
+    setImages(Array.from(e.target.files));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can send formData to backend API here
-    alert("Successfully added!");
+
+    try {
+      setLoading(true);
+      const data = new FormData();
+
+      data.append("product", new Blob([JSON.stringify(formData)], { type: "application/json" }));
+
+      images.forEach((file) => {
+        data.append("images", file);
+      });
+
+      const response = await createProduct(data);
+      console.log("Response from createProduct API:", JSON.stringify(response, null, 2));
+
+      if (!response.status) {
+        throw new Error("Failed to create product");
+      }
+
+      enqueueSnackbar('Product added successfully', { variant: 'success' });
+
+
+      setFormData({
+        productName: "",
+        brand: "",
+        price: "",
+        category: "",
+        quantity: "",
+        date: "",
+        description: "",
+      });
+      setImages([]);
+
+    } catch (error) {
+      console.error("Error creating product:", error);
+      enqueueSnackbar('Failed to add product', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-gray-50">
       <SellerSidebar />
 
-      {/* Main Content */}
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-bold mb-6" >Add New Food Item</h1>
+        <h1
+          className="text-3xl font-bold mb-6"
+          style={{ fontFamily: "Irish Grover" }}
+        >
+          Add New Food Item
+        </h1>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-[#b6d0f8] p-6 rounded-2xl shadow-lg space-y-4"
+          className="bg-white p-6 rounded-2xl shadow-lg space-y-4"
         >
           {/* Product Name */}
           <div>
@@ -154,8 +216,8 @@ const AddNewFoodItem = () => {
               required
             />
             <div className="flex gap-2 mt-2">
-              {formData.images.length > 0 &&
-                formData.images.slice(0, 2).map((file, index) => (
+              {images.length > 0 &&
+                images.slice(0, 2).map((file, index) => (
                   <div
                     key={index}
                     className="w-24 h-24 border rounded-lg flex items-center justify-center bg-gray-100"
@@ -178,7 +240,7 @@ const AddNewFoodItem = () => {
               type="submit"
               className="px-4 py-2 rounded-lg bg-pink-500 text-white hover:bg-pink-600"
             >
-              Add Item
+              {loading ? <CircularProgress/> : "Add Product"}
             </button>
           </div>
         </form>

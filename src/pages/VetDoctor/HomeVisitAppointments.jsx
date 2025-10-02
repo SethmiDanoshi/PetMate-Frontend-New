@@ -67,9 +67,7 @@ const HomeVisitAppointments = () => {
         </div>
       )}
 
-      <div className="mt-8 text-center text-sm text-white bg-[#640D56] rounded-lg py-2">
-        PetMate © 2024  Terms of Service  Data Policy
-      </div>
+     
     </div>
   );
 };

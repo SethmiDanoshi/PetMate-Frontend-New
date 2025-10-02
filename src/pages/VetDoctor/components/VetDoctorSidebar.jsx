@@ -67,7 +67,7 @@ const VetDoctorSidebar = ({ activeTab, setActiveTab, isOpen, onClose }) => {
         <div className="flex flex-col items-center mb-8 pt-6">
           <div className="relative">
             <img
-              src={doctor?.profileImage || "/Vetprofile.png"}
+              src={doctor?.profileImage || "https://via.placeholder.com/100"}
               alt={doctor?.name || "Vet Doctor"}
               className="w-28 h-28 rounded-full border-4 border-white object-cover"
             />
@@ -76,9 +76,9 @@ const VetDoctorSidebar = ({ activeTab, setActiveTab, isOpen, onClose }) => {
             </button>
           </div>
           <h2 className="mt-3 text-2xl" style={{ fontFamily: "Italianno" }}>
-            {doctor?.name || "Yupun De Silva"}
+            {doctor?.name || "Loading..."}
           </h2>
-          <p className="text-sm text-gray-200">{doctor?.email || "yupundesilva@gmail.com"}</p>
+          <p className="text-sm text-gray-200">{doctor?.email || ""}</p>
         </div>
 
         {/* Sidebar Menu */}

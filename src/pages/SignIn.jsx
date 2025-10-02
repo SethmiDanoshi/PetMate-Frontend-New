@@ -58,8 +58,15 @@ const SignIn = () => {
         if(response.status){
           console.log("Login successfully.");
           enqueueSnackbar('Login successful', {variant: 'success'});
-          login(response);
-        }else{
+          if(response.data.role === "SELLER"){
+            login(response.data,"/seller/dashboard" );
+            navigate("/seller/dashboard");
+          }else if(response.data.role === "BUYER"){
+            login(response.data,"/buyerdashboard" );
+            navigate("/buyerdashboard");
+          }
+          
+        }else{ 
           console.error("Login failed.", response.error);
           enqueueSnackbar('Login failed', {variant: 'error'});
         }
